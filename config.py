@@ -2,12 +2,26 @@
 
 # local information
 location = "Mannheim"
-solar_watts = 20
+solar_capacity = 20
 
 # Adjust at which battery percentage the Pi should start performing calculations
 surplus_threshold = 85
 
-# Specify headers for the csv logs. Must match data from sensors.
-grid_headers = ["1", "2"]  # TODO: add correct headers for the grid csv file
-computations_headers = ["x", "y"]  # TODO: add correct headers for computations csv file
+# Specify headers for the csv files. Must match data from sensors for grid data and from computations for comp data
+grid_headers = ["timestamp",
+                "location",
+                "solar_capacity",
+                "event",
+                "isFault",
+                "battery_state",
+                "power_input_state",
+                "power_input_5v_io",
+                "battery_temperature",
+                "battery_level",
+                "battery_voltage",
+                "battery_current",
+                "io_voltage",
+                "io_current"]
 
+# TODO: add correct headers for computations csv file
+computations_headers = ["x", "y"]

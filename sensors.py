@@ -1,16 +1,12 @@
 #!/usr/bin/python3
 
-from datetime import datetime
-import os
-import time
 import logging
-from pijuice import PiJuice
 
 logging.basicConfig(level=logging.INFO, filename="logs/microgrid.log")
 
 
 # TODO: Add average functionality? Doesn't make sense for status, but maybe for other readings
-def read_sensors(pijuice, frequency):
+def read_sensors(pijuice, frequency=10):
     """Gets sensor readings from PiJuice module.
 
     Args:
@@ -19,18 +15,31 @@ def read_sensors(pijuice, frequency):
 
     Returns:
         data (dict): Sensor readings from the PiJuice module.
+
+    Example values:
+    {'data': {'isFault': False, 'isButton': False, 'battery': 'CHARGING_FROM_IN', 'powerInput': 'PRESENT',
+              'powerInput5vIo': 'NOT_PRESENT'}, 'error': 'NO_ERROR'}
+    29 99 4188 -65 5025 796
     """
 
     data = dict()
-    data["general_status"] = pijuice.status.GetStatus()
 
-    # TODO: Add loop that averages using the specified frequency
+    status = pijuice.status.GetStatus()["data"]
+    # unpack the status information so that we can handle the data easily in a single dictionary
+    data["isFault"] = status["isFault"]  # e.g. False
+    data["battery_state"] = status["battery"]  # e.g. 'CHARGING_FROM_IN'
+    data["power_input_state"] = status["powerInput"]  # e.g. 'PRESENT',
+    data["power_input_5v_io"] = status["powerInput5vIo"]  # e.g. 'NOT_PRESENT'
+
+    # TODO: Add loop that averages the sensor data using the specified frequency
+    # since these are all integer variables, we can e.g. make a loop of X readings and keep the average
     data["battery_temperature"] = pijuice.status.GetBatteryTemperature()["data"]
     data["battery_level"] = pijuice.status.GetChargeLevel()["data"]
     data["battery_voltage"] = pijuice.status.GetBatteryVoltage()["data"]
     data["battery_current"] = pijuice.status.GetBatteryCurrent()["data"]
     data["io_voltage"] = pijuice.status.GetIoVoltage()["data"]
     data["io_current"] = pijuice.status.GetIoCurrent()["data"]
+
     return data
 
     # logging.info('Starting logging.py...')

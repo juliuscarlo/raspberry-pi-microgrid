@@ -1,14 +1,13 @@
 #!/usr/bin/python3
 
-from datetime import datetime
 import os
 import time
 import logging
+import helper
 
 logging.basicConfig(level=logging.INFO, filename="logs/microgrid.log")
 
 
-# TODO: maybe find a better way to simulate computation, something that can be limited in time precisely
 def compute_unit():
     """Loads the Pis CPU cores to simulate computational tasks. The sysbench program computes prime numbers up to
     the specified integer. The sleep was implemented with a margin to allow for the computations to finish (since
@@ -16,13 +15,13 @@ def compute_unit():
     simultaneously.
 
     Returns:
-        Bool: True when (approximately) done computing one unit.
+        int: 1 when done computing one unit.
     """
 
     os.system("sysbench --num-threads=4 --test=cpu --cpu-max-prime=5000 run")
     time.sleep(15)
 
-    return True
+    return 1
 
 
 def shutdown(pijuice):
@@ -34,7 +33,8 @@ def shutdown(pijuice):
         pijuice (obj): The initialized PiJuice object.
     """
 
-    logging.info('Shutdown will be issued in 2:00 minutes. PiJuice will cut power in 2:30 minutes.')
+    logging.info("%s %s", helper.current_time(),
+                 'Shutdown will be issued in 2:00 minutes. PiJuice will cut power in 2:30 minutes.')
     time.sleep(120)
     pijuice.power.SetPowerOff(30)
     os.system("sudo shutdown -h now")

@@ -1,33 +1,43 @@
 #!/usr/bin/python3
 
-from datetime import datetime
 import os
-import time
 import logging
 import config
 import helper
 
 
-def write(filename, event, data):
-    """Appends a line to a csv file. Creates the file, if it does not exist yet.
+def write_grid_csv(filename, event, data):
+    """Appends a line to a csv file. Creates the file, if it does not exist yet. Files are in /logs folder.
+    Timestamp is generated at write time, location and capacity is read from the config.
+
+    A comma is used as the separator.
 
     Args:
         filename (str): The name of the csv file to which a line is appended.
-        timestamp (str): The current date and time. Is calculated by default.
-        location (str): The local timezone.
         event (str): The event that has triggered the log.
-        data (dict): The sensor data read from the PiJuice module.
+        data (dict): The data to be written in the new line of the file.
     """
 
     timestamp = helper.current_time()
     location = config.location
-    solar_watts = config.solar_watts
+    solar_capacity = config.solar_capacity
 
     # TODO: add all the components that need to be logged to the row as strings, separated by a comma
-    row = str(event)
+    # First the general info is converted to csv format and concatenated to the row string
+    row = ""
+    row += timestamp + ", "
+    row += location + ", "
+    row += solar_capacity + ", "
+    row += event
+
+    # Then the info from the sensor data dict is read and concatenated to the row string item by item
+    for item in config.grid_headers[3:]:
+        row += ", "
+        row += data[item]
+
     path = os.path.join("/logs", filename)
 
     with open(path, 'a') as file:
         file.write(row + "\n")
 
-    logging.info("add a smart logging comment here.")
+    logging.info("%s %s", helper.current_time(), "Row of data appended to csv log.")
