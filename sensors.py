@@ -1,9 +1,6 @@
 #!/usr/bin/python3
 
-import logging
-
-logging.basicConfig(level=logging.INFO, filename="logs/microgrid.log")
-
+# TODO: Maybe add debugging level logging in case we run into issues?
 
 # TODO: Add average functionality? Doesn't make sense for status, but maybe for other readings
 def read_sensors(pijuice, frequency=10):

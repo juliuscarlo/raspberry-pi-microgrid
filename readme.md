@@ -2,12 +2,12 @@
 
 Measures output of a Raspberry Pi that draws power from a PiJuice module in the form of calculations performed.
 
-## Components
+## Modules
 
 ### master_script.py
 
-The master_script needs to be run at boot. It can be added to the Pi crontab. This contains the general logic at which
-the system is run.
+The master_script needs to be run at boot. It can be added to the Pi crontab. This contains the general logic
+of the microgrid.
 
 ### dispatcher.py
 

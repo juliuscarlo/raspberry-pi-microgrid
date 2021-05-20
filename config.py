@@ -8,6 +8,7 @@ solar_capacity = 20
 surplus_threshold = 85
 
 # Specify headers for the csv files. Must match data from sensors for grid data and from computations for comp data
+# Must match the naming convention used in sensors and csv_logger!
 grid_headers = ["timestamp",
                 "location",
                 "solar_capacity",
@@ -22,6 +23,3 @@ grid_headers = ["timestamp",
                 "battery_current",
                 "io_voltage",
                 "io_current"]
-
-# TODO: add correct headers for computations csv file
-computations_headers = ["x", "y"]

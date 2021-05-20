@@ -6,9 +6,9 @@ import config
 import helper
 
 
-def write_grid_csv(filename, event, data):
+def write_row(event, data, filename="grid.csv"):
     """Appends a line to a csv file. Creates the file, if it does not exist yet. Files are in /logs folder.
-    Timestamp is generated at write time, location and capacity is read from the config.
+    Timestamp is generated at write time, location-specific data is read from the config.
 
     A comma is used as the separator.
 

@@ -4,24 +4,25 @@ import os
 import time
 import logging
 import helper
+import sensors
 
-logging.basicConfig(level=logging.INFO, filename="logs/microgrid.log")
 
-
-def compute_unit():
+def compute_unit(pijuice):
     """Loads the Pis CPU cores to simulate computational tasks. The sysbench program computes prime numbers up to
     the specified integer. The sleep was implemented with a margin to allow for the computations to finish (since
     they are not running in Python). This is to avoid multiple of these computational tasks to be spawned
     simultaneously.
 
     Returns:
-        int: 1 when done computing one unit.
+        data: 1 when done computing one unit.
     """
 
     os.system("sysbench --num-threads=4 --test=cpu --cpu-max-prime=5000 run")
-    time.sleep(15)
+    time.sleep(5)  # wait a few seconds and then take the reading
+    system_status = sensors.read_sensors(pijuice)
+    time.sleep(10)  # wait for computation to finish
 
-    return 1
+    return system_status
 
 
 def shutdown(pijuice):
