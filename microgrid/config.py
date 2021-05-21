@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+# TODO: also manage the sensor frequency from here, as well as the other thresholds for computing etc.
+
 # local information
 location = "Mannheim"
 solar_capacity = 20

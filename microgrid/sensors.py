@@ -23,7 +23,7 @@ def read_sensors(pijuice):
 
     status = pijuice.status.GetStatus()["data"]
     # unpack the status information so that we can handle the data easily in a single dictionary
-    data["isFault"] = status["isFault"]  # e.g. False
+    data["isFault"] = str(status["isFault"])  # e.g. False
     data["battery_state"] = status["battery"]  # e.g. 'CHARGING_FROM_IN'
     data["power_input_state"] = status["powerInput"]  # e.g. 'PRESENT',
     data["power_input_5v_io"] = status["powerInput5vIo"]  # e.g. 'NOT_PRESENT'
@@ -45,13 +45,13 @@ def read_average(pijuice, frequency):
     data = dict()
 
     single_read = read_sensors(pijuice)  # initial read
-    for key, value in single_read.iteritems():
+    for key, value in single_read.items():
         data[key] = [value]  # make list structure to append values from later readings
 
     for n in range(1, frequency):
-        time.sleep(0.1)
+        time.sleep(0.01)
         single_read = read_sensors(pijuice)
-        for key, value in single_read.iteritems():
+        for key, value in single_read.items():
             data[key].append(value)
 
     # Reduce the n readings to a single reading, chose a measure depending on the data type

@@ -3,8 +3,9 @@
 import os
 import time
 import logging
-import helper
-import sensors
+import subprocess
+from microgrid import helper
+from microgrid import sensors
 
 
 def compute_unit(pijuice):
@@ -20,10 +21,8 @@ def compute_unit(pijuice):
         system_status (dict): the dictionary of sensor readings
     """
 
-    os.system("sysbench --num-threads=4 --test=cpu --cpu-max-prime=5000 run")
-    time.sleep(5)  # wait a few seconds and then take the reading
+    subprocess.call(['sysbench', "--num-threads=4", "--test=cpu", "--cpu-max-prime=5000", "run"])
     system_status = sensors.read_sensors(pijuice)
-    time.sleep(10)  # wait for computation to finish
 
     return system_status
 

@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
-import helper
-import dispatcher
-import sensors
-import csv_logger
-import config
+from microgrid import helper
+from microgrid import dispatcher
+from microgrid import sensors
+from microgrid import csv_logger
+from microgrid import config
 import logging
 
 
@@ -64,7 +64,7 @@ def shutdown_routine(pijuice):
     dispatcher.shutdown(pijuice)
 
 
-if __name__ == "__main__ ":
+if __name__ == "__main__":
     """Runs the three phases of the microgrid system sequentially when this script is executed."""
 
     # set up logging

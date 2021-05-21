@@ -2,8 +2,8 @@
 
 import os
 import logging
-import config
-import helper
+from microgrid import config
+from microgrid import helper
 
 
 def write_row(event, data, filename="grid.csv"):
@@ -25,17 +25,22 @@ def write_row(event, data, filename="grid.csv"):
     # TODO: add all the components that need to be logged to the row as strings, separated by a comma
     # First the general info is converted to csv format and concatenated to the row string
     row = ""
-    row += timestamp + ", "
-    row += location + ", "
-    row += solar_capacity + ", "
+    row += timestamp + ","
+    row += location + ","
+    row += str(solar_capacity) + ","
     row += event
 
     # Then the info from the sensor data dict is read and concatenated to the row string item by item
-    for item in config.grid_headers[3:]:
-        row += ", "
-        row += data[item]
+    for item in config.grid_headers[4:]:
+        row += ","
+        row += str(data[item])
 
-    path = os.path.join("/logs", filename)
+    # If there is no file yet, create it with headers
+    path = os.path.join("logs", filename)
+
+    if not os.path.isfile(path):
+        with open(path, 'a') as file:
+            file.write(",".join(config.grid_headers) + "\n")
 
     with open(path, 'a') as file:
         file.write(row + "\n")
