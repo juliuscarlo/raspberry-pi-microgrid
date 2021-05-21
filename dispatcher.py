@@ -13,8 +13,11 @@ def compute_unit(pijuice):
     they are not running in Python). This is to avoid multiple of these computational tasks to be spawned
     simultaneously.
 
+    Args:
+        pijuice (obj): the pijuice object
+
     Returns:
-        data: 1 when done computing one unit.
+        system_status (dict): the dictionary of sensor readings
     """
 
     os.system("sysbench --num-threads=4 --test=cpu --cpu-max-prime=5000 run")

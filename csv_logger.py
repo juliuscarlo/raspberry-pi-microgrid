@@ -13,7 +13,7 @@ def write_row(event, data, filename="grid.csv"):
     A comma is used as the separator.
 
     Args:
-        filename (str): The name of the csv file to which a line is appended.
+        filename (str): The name of the csv file to which a line is appended, default is grid.csv
         event (str): The event that has triggered the log.
         data (dict): The data to be written in the new line of the file.
     """

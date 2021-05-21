@@ -48,7 +48,7 @@ def logging_routine(pijuice):
         csv_logger.write_row(event="unit_computed", data=system_status)
 
         if units_computed % 5 == 0:
-            logging.info("%s %s", helper.current_time(), "5 units computed.")
+            logging.info("%s %s %s", helper.current_time(), system_status, " --> 5 units computed. ")
 
     logging.info("%s %s", helper.current_time(), "Battery below threshold, stopped computations.")
     logging.info("%s, %s, %s", helper.current_time(), "Total units computed during this session: ", units_computed)

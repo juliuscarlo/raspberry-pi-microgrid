@@ -1,14 +1,14 @@
 #!/usr/bin/python3
 
-# TODO: Maybe add debugging level logging in case we run into issues?
+import time
+import statistics
 
-# TODO: Add average functionality? Doesn't make sense for status, but maybe for other readings
-def read_sensors(pijuice, frequency=10):
+
+def read_sensors(pijuice):
     """Gets sensor readings from PiJuice module.
 
     Args:
         pijuice (obj): The initialized PiJuice object.
-        frequency (int): The number of readings to take.
 
     Returns:
         data (dict): Sensor readings from the PiJuice module.
@@ -28,7 +28,6 @@ def read_sensors(pijuice, frequency=10):
     data["power_input_state"] = status["powerInput"]  # e.g. 'PRESENT',
     data["power_input_5v_io"] = status["powerInput5vIo"]  # e.g. 'NOT_PRESENT'
 
-    # TODO: Add loop that averages the sensor data using the specified frequency
     # since these are all integer variables, we can e.g. make a loop of X readings and keep the average
     data["battery_temperature"] = pijuice.status.GetBatteryTemperature()["data"]
     data["battery_level"] = pijuice.status.GetChargeLevel()["data"]
@@ -39,9 +38,27 @@ def read_sensors(pijuice, frequency=10):
 
     return data
 
-    # logging.info('Starting logging.py...')
-    # for i in range(100):
-    #     logging.info('%s %s %s %s %s %s %s %s', current_time, general_status, battery_temperature, battery_level,
-    #                  battery_voltage, battery_current, io_voltage, io_current)
-    #
-    #     time.sleep(1)
+
+def read_average(pijuice, frequency):
+    """Takes n sensor readings and calculates a single value for each variable. Returns the sensor readings dict."""
+
+    data = dict()
+
+    single_read = read_sensors(pijuice)  # initial read
+    for key, value in single_read.iteritems():
+        data[key] = [value]  # make list structure to append values from later readings
+
+    for n in range(1, frequency):
+        time.sleep(0.1)
+        single_read = read_sensors(pijuice)
+        for key, value in single_read.iteritems():
+            data[key].append(value)
+
+    # Reduce the n readings to a single reading, chose a measure depending on the data type
+    for key in data.keys():
+        if type(data[key][0]) == str:
+            data[key] = statistics.mode(data[key])  # use mode for strings (most frequent value)
+        else:
+            data[key] = statistics.mean(data[key])  # use mean for numerical values
+
+    return data
