@@ -2,6 +2,7 @@
 
 import time
 import statistics
+from microgrid import config
 
 
 def read_sensors(pijuice):
@@ -39,7 +40,7 @@ def read_sensors(pijuice):
     return data
 
 
-def read_average(pijuice, frequency=100):
+def read_average(pijuice, frequency=config.number_of_reads):
     """Takes n sensor readings and calculates a single value for each variable. Returns the sensor readings dict."""
 
     data = dict()

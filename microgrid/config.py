@@ -2,8 +2,6 @@
 
 import os
 
-# TODO: also manage the sensor frequency from here, as well as the other thresholds for computing etc.
-
 # set project root by specifying the path to the gridcontrol.py
 ROOT_DIR = os.path.dirname(os.path.abspath("/home/pi/raspberry-pi-microgrid/gridcontrol.py"))
 
@@ -14,8 +12,11 @@ solar_capacity = 20
 # Adjust at which battery percentage the Pi should start performing calculations
 surplus_threshold = 85
 
-# Adjust the frequency of the bootups per hour
+# Below this battery level threshold, pi will wait for 60 minutes before next wake-up after shutting down.
 hourly_checks_threshold = 65
+
+# How many individual readings should be taken by the sensors.read_average method before averaging?
+number_of_reads = 100
 
 # Specify headers for the csv files. Must match data from sensors for grid data and from computations for comp data
 # Must match the naming convention used in sensors and csv_logger!

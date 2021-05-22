@@ -32,11 +32,23 @@ def wakeup_enable(pijuice):
     pijuice.rtcAlarm.SetWakeupEnabled(True)
 
 
-def set_wakeup_frequency(pijuice, minutes):
-    """Sets the intervals in which the PiJuice powers up the pi from sleep.
+def next_wakeup_in(pijuice, minutes):
+    """Sets the interval in minutes from now, when the pi should wake up from sleep again.
 
     Args:
         pijuice (obj): The initialized PiJuice object.
-        minutes (int): Number of minutes after the full hour at which to wakeup. Should be 0, 15 or 30.
+        minutes (int): Number of minutes from now the pi should wake up.
     """
-    pijuice.rtcAlarm.SetAlarm({'second': 0, 'minute': minutes, 'hour': 'EVERY_HOUR', 'day': 'EVERY_DAY'})
+    # calculate the minute value needed for the specified interval (mod 60 keeps values senseful across the full hour)
+    m = (datetime.now().minute + minutes) % 60
+    pijuice.rtcAlarm.SetAlarm({'second': 0, 'minute': m, 'hour': 'EVERY_HOUR', 'day': 'EVERY_DAY'})
+
+
+def set_wakeup_on_charge(pijuice, battery_level):
+    """Sets a battery_level at which the pijuice will start up the pi automatically.
+
+    Args:
+        pijuice (obj): The initialized PiJuice object.
+        battery_level (int): senseful values are between 10 and 90.
+    """
+    pijuice.power.SetWakeUpOnCharge(battery_level)

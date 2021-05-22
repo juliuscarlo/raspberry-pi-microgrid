@@ -21,14 +21,10 @@ def initial_boot_sequence():
     csv_logger.write_row(event="wakeup", data=system_status)
     logging.info("%s %s", helper.current_time(), "Initial boot sequence complete...")
 
-    # TODO: add a check for battery level. If  70 <= battery_level <= 85 set the alarm to 15 minute intervals
-    # for <70 leave the alarm at one hour intervals. This allows the pi to react more quickly to high energy
-    # production when the solar panel is working at full capacity.
-
     return pijuice
 
 
-def logging_routine(pijuice):
+def computation_routine(pijuice):
     """Performs the logging and computational routine."""
     logging.info("%s %s", helper.current_time(), "Logging and computational routine started...")
 
@@ -51,11 +47,13 @@ def logging_routine(pijuice):
         if units_computed % 5 == 0:
             logging.info("%s %s %s", helper.current_time(), system_status, " --> 5 units computed. ")
 
-    logging.info("%s %s", helper.current_time(), "Battery below threshold, stopped computations.")
+    logging.info("%s %s", helper.current_time(), "Battery below threshold, ended computation routine.")
     logging.info("%s, %s, %s", helper.current_time(), "Total units computed during this session: ", units_computed)
 
     system_status = sensors.read_average(pijuice)
-    csv_logger.write_row(event="stop_compute", data=system_status)
+
+    if units_computed > 0:
+        csv_logger.write_row(event="stop_compute", data=system_status)
 
 
 def shutdown_routine(pijuice):
@@ -64,13 +62,12 @@ def shutdown_routine(pijuice):
     csv_logger.write_row(event="shutdown", data=system_status)
 
     # Adjust wakeup frequency depending on battery level
-    b = system_status["battery_level"]
-    if b < config.hourly_checks_threshold:
-        helper.set_wakeup_frequency(pijuice, minutes=0)
-        logging.info("%s %s", helper.current_time(), "Wake-up set to hourly.")
+    if system_status["battery_level"] < config.hourly_checks_threshold:
+        helper.next_wakeup_in(pijuice, minutes=60)
+        logging.info("%s %s", helper.current_time(), "Next wake-up in 60 minutes.")
     else:
-        helper.set_wakeup_frequency(pijuice, minutes=15)
-        logging.info("%s %s", helper.current_time(), "Wake-up set to quarter-hourly.")
+        helper.next_wakeup_in(pijuice, minutes=15)
+        logging.info("%s %s", helper.current_time(), "Next wake-up in 15 minutes.")
 
     dispatcher.shutdown(pijuice)
 
@@ -82,5 +79,5 @@ if __name__ == "__main__":
 
     # Run the three phases sequentially
     pijuice = initial_boot_sequence()  # the initial sequence returns the pijuice object for further use
-    logging_routine(pijuice)
+    computation_routine(pijuice)
     shutdown_routine(pijuice)
