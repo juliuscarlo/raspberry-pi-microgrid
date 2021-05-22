@@ -17,7 +17,7 @@ def initial_boot_sequence():
     pijuice = helper.pijuice_init()  # initialize the PiJuice object
     helper.wakeup_enable(pijuice)  # enable the alarm to ensure wakeup after next sleep phase
 
-    system_status = sensors.read_sensors(pijuice)
+    system_status = sensors.read_average(pijuice)
     csv_logger.write_row(event="wakeup", data=system_status)
     logging.info("%s %s", helper.current_time(), "Initial boot sequence complete...")
 
@@ -32,7 +32,7 @@ def logging_routine(pijuice):
     """Performs the logging and computational routine."""
     logging.info("%s %s", helper.current_time(), "Logging and computational routine started...")
 
-    system_status = sensors.read_sensors(pijuice)
+    system_status = sensors.read_average(pijuice)
     logging.info("%s %s", helper.current_time(), system_status)
 
     units_computed = 0  # counts the units computed during a computing session
@@ -54,14 +54,24 @@ def logging_routine(pijuice):
     logging.info("%s %s", helper.current_time(), "Battery below threshold, stopped computations.")
     logging.info("%s, %s, %s", helper.current_time(), "Total units computed during this session: ", units_computed)
 
-    system_status = sensors.read_sensors(pijuice)
+    system_status = sensors.read_average(pijuice)
     csv_logger.write_row(event="stop_compute", data=system_status)
 
 
 def shutdown_routine(pijuice):
     logging.info("%s %s", helper.current_time(), "Initiating shutdown routine.")
-    system_status = sensors.read_sensors(pijuice)
+    system_status = sensors.read_average(pijuice)
     csv_logger.write_row(event="shutdown", data=system_status)
+
+    # Adjust wakeup frequency depending on battery level
+    b = system_status["battery_level"]
+    if b < config.hourly_checks_threshold:
+        helper.set_wakeup_frequency(pijuice, minutes=0)
+        logging.info("%s %s", helper.current_time(), "Wake-up set to hourly.")
+    else:
+        helper.set_wakeup_frequency(pijuice, minutes=15)
+        logging.info("%s %s", helper.current_time(), "Wake-up set to quarter-hourly.")
+
     dispatcher.shutdown(pijuice)
 
 

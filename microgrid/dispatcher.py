@@ -22,7 +22,7 @@ def compute_unit(pijuice):
     """
 
     subprocess.call(['sysbench', "--num-threads=4", "--test=cpu", "--cpu-max-prime=5000", "run"])
-    system_status = sensors.read_sensors(pijuice)
+    system_status = sensors.read_average(pijuice)
 
     return system_status
 

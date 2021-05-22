@@ -14,6 +14,9 @@ solar_capacity = 20
 # Adjust at which battery percentage the Pi should start performing calculations
 surplus_threshold = 85
 
+# Adjust the frequency of the bootups per hour
+hourly_checks_threshold = 65
+
 # Specify headers for the csv files. Must match data from sensors for grid data and from computations for comp data
 # Must match the naming convention used in sensors and csv_logger!
 grid_headers = ["timestamp",

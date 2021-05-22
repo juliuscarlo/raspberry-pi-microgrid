@@ -39,5 +39,4 @@ def set_wakeup_frequency(pijuice, minutes):
         pijuice (obj): The initialized PiJuice object.
         minutes (int): Number of minutes after the full hour at which to wakeup. Should be 0, 15 or 30.
     """
-
     pijuice.rtcAlarm.SetAlarm({'second': 0, 'minute': minutes, 'hour': 'EVERY_HOUR', 'day': 'EVERY_DAY'})

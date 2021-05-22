@@ -22,7 +22,6 @@ def write_row(event, data, filename="grid.csv"):
     location = config.location
     solar_capacity = config.solar_capacity
 
-    # TODO: add all the components that need to be logged to the row as strings, separated by a comma
     # First the general info is converted to csv format and concatenated to the row string
     row = ""
     row += timestamp + ","

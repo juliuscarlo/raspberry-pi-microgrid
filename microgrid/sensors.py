@@ -39,7 +39,7 @@ def read_sensors(pijuice):
     return data
 
 
-def read_average(pijuice, frequency):
+def read_average(pijuice, frequency=100):
     """Takes n sensor readings and calculates a single value for each variable. Returns the sensor readings dict."""
 
     data = dict()
