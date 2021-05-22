@@ -6,6 +6,7 @@ from microgrid import sensors
 from microgrid import csv_logger
 from microgrid import config
 import logging
+import os
 
 
 def initial_boot_sequence():
@@ -66,9 +67,8 @@ def shutdown_routine(pijuice):
 
 if __name__ == "__main__":
     """Runs the three phases of the microgrid system sequentially when this script is executed."""
-
     # set up logging
-    logging.basicConfig(level=logging.INFO, filename="logs/microgrid.log")
+    logging.basicConfig(level=logging.INFO, filename=os.path.join(config.ROOT_DIR, "logs/microgrid.log"))
 
     # Run the three phases sequentially
     pijuice = initial_boot_sequence()  # the initial sequence returns the pijuice object for further use

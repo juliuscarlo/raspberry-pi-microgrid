@@ -1,6 +1,11 @@
 #!/usr/bin/python3
 
+import os
+
 # TODO: also manage the sensor frequency from here, as well as the other thresholds for computing etc.
+
+# set project root by specifying the path to the gridcontrol.py
+ROOT_DIR = os.path.dirname(os.path.abspath("/home/pi/raspberry-pi-microgrid/gridcontrol.py"))
 
 # local information
 location = "Mannheim"

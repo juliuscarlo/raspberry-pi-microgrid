@@ -36,7 +36,7 @@ def write_row(event, data, filename="grid.csv"):
         row += str(data[item])
 
     # If there is no file yet, create it with headers
-    path = os.path.join("logs", filename)
+    path = os.path.join(config.ROOT_DIR, "logs", filename)
 
     if not os.path.isfile(path):
         with open(path, 'a') as file:

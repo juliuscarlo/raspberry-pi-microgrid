@@ -4,14 +4,24 @@ Measures output of a Raspberry Pi that draws power from a PiJuice module in the 
 
 ## Modules
 
-### master_script.py
+### gridcontrol.py
 
-The master_script needs to be run at boot. It can be added to the Pi crontab. This contains the general logic
-of the microgrid.
+This is the entry point and controls the overall microgrid system. The
+gridcontrol needs to be started automatically at boot time. It can
+be added to the crontab.
 
-This is the command needed to the crontab (as user pi, not sudo!):
+Open the crontab (as user pi, not sudo!):
+
+`crontab -e`
+
+Add this entry to run the 
 
 `@reboot /usr/bin/python3 /home/pi/raspberry-pi-microgrid/gridcontrol.py`
+
+Set permissions for the microgrid project, otherwise cron will not
+be able to run the gridcontrol:
+
+`chmod -R 755 raspberry-pi-microgrid/`
 
 ### dispatcher.py
 
