@@ -6,16 +6,25 @@ from microgrid import sensors
 from microgrid import csv_logger
 from microgrid import config
 import logging
+import subprocess
 import os
 
 
+# TODO: make sure directories exist for log files (empty dirs dont exist on github)
+# change logging to print next startup time when shutting down
+# remove "line written to csv" log
+# check all logs for senseful info, maybe add one or two steps
+
 def initial_boot_sequence():
     """Performs mandatory steps after wakeup from sleep. Returns the pijuice object for further use."""
-    logging.info("%s %s", helper.current_time(), "Initial boot sequence started...")
-
+    logging.info("Initial boot sequence started...")
     helper.wait_for_pijuice_com()  # wait for PiJuice com to initialize
     pijuice = helper.pijuice_init()  # initialize the PiJuice object
     helper.wakeup_enable(pijuice)  # enable the alarm to ensure wakeup after next sleep phase
+
+    t = helper.current_time()  # get t to check Pi time drift before syncing to RTC
+    subprocess.call(['sudo', "hwclock", "-s"])  # sync time from PiJuice RTC
+    logging.info("%s %s %s", helper.current_time(), "Synced time from RTC. Old time was ", t)
 
     system_status = sensors.read_average(pijuice)
     csv_logger.write_row(event="wakeup", data=system_status)
@@ -48,7 +57,7 @@ def computation_routine(pijuice):
             logging.info("%s %s %s", helper.current_time(), system_status, " --> 5 units computed. ")
 
     logging.info("%s %s", helper.current_time(), "Battery below threshold, ended computation routine.")
-    logging.info("%s, %s, %s", helper.current_time(), "Total units computed during this session: ", units_computed)
+    logging.info("%s %s %s", helper.current_time(), "Total units computed during this session: ", units_computed)
 
     system_status = sensors.read_average(pijuice)
 

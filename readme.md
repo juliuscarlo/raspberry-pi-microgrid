@@ -2,13 +2,32 @@
 
 Measures output of a Raspberry Pi that draws power from a PiJuice module in the form of calculations performed.
 
-## Modules
 
-### gridcontrol.py
+## Setup
 
-This is the entry point and controls the overall microgrid system. The
-gridcontrol needs to be started automatically at boot time. It can
-be added to the crontab.
+### Copy the project folder
+Copy the raspberry-pi-microgrid project to your /home/pi folder or wherever you want it.
+
+### Permissions
+Set permissions for the microgrid project, otherwise cron will not
+be able to run the gridcontrol:
+
+`chmod -R 755 raspberry-pi-microgrid/`
+
+### Real Time Clock (RTC)
+
+Check if the ID EEPROM address is 0x50. Check the if the RTC driver is loaded
+using`i2cdetect -y 1`. There should be 'UU' in position 68. Otherwise the RTC needs
+to be added as follows:
+
+Add `dtoverlay=i2c-rtc,ds1339` to `/boot/config.txt`
+
+In addition, in order for the Pi to get the time from the PiJuice RTC at boot (to prevent time drift)
+an entry needs to be added to the `/etc/rc.local`. 
+
+`sudo hwclock -s`
+
+The RTC can be read using the command `sudo hwclock -r`
 
 Open the crontab (as user pi, not sudo!):
 
@@ -18,10 +37,15 @@ Add this entry to run the
 
 `@reboot /usr/bin/python3 /home/pi/raspberry-pi-microgrid/gridcontrol.py`
 
-Set permissions for the microgrid project, otherwise cron will not
-be able to run the gridcontrol:
 
-`chmod -R 755 raspberry-pi-microgrid/`
+
+## Modules
+
+### gridcontrol.py
+
+This is the entry point and controls the overall microgrid system. The
+gridcontrol needs to be started automatically at boot time. It can
+be added to the crontab.
 
 ### dispatcher.py
 
