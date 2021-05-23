@@ -22,18 +22,13 @@ to be added as follows:
 
 Add `dtoverlay=i2c-rtc,ds1339` to `/boot/config.txt`
 
-In addition, in order for the Pi to get the time from the PiJuice RTC at boot (to prevent time drift)
-an entry needs to be added to the `/etc/rc.local`. 
-
-`sudo hwclock -s`
-
 The RTC can be read using the command `sudo hwclock -r`
 
 Open the crontab (as user pi, not sudo!):
 
 `crontab -e`
 
-Add this entry to run the 
+Add this entry:
 
 `@reboot /usr/bin/python3 /home/pi/raspberry-pi-microgrid/gridcontrol.py`
 
