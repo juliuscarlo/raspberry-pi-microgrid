@@ -24,6 +24,8 @@ Add `dtoverlay=i2c-rtc,ds1339` to `/boot/config.txt`
 
 The RTC can be read using the command `sudo hwclock -r`
 
+### Cronjob (Required to keep microgrid running) 
+
 Open the crontab (as user pi, not sudo!):
 
 `crontab -e`
