@@ -70,12 +70,12 @@ Contains the methods used to retrieve sensor data from the PiJuice.
 The config contains experiment-specific information such as geographic location and installed solar capacity. This can
 be adjusted according to the specific location and setup.
 
-### logs
+## Logs
 There are two logs written to /logs:
 - microgrid.log for system monitoring and debugging
 - grid.csv for quantitative analysis
 
-### Tests
+## Tests
 There are some testfiles included in /tests that might need
 some adjustments before being usable. Check the comments in these
 files and adjust them to test indivodual modules or
