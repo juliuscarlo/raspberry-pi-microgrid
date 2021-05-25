@@ -1,8 +1,8 @@
-<<<<<<< HEAD
+
 *config.py*
 .csv
 .log
 .idea
-=======
+
 __pycache__/
->>>>>>> c4fed33d744314259aa76fe0dbaa0c3e86ab075b
+
