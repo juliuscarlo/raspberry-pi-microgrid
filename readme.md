@@ -17,7 +17,9 @@ be able to run the gridcontrol:
 
 ### Real Time Clock (RTC)
 
-Check if the ID EEPROM address is 0x50. Check the if the RTC driver is loaded
+If the ID EEPROM address is set to 0x50, there might be issues with wakeup enable getting deactivated at every boot. In this case changing it to 0x52 fixed the problem on at least one occasion.
+
+Check the if the RTC driver is loaded
 using`i2cdetect -y 1`. There should be 'UU' in position 68. Otherwise the RTC needs
 to be added as follows:
 
