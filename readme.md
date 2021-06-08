@@ -70,7 +70,8 @@ Contains the methods used to retrieve sensor data from the PiJuice.
 ### config.py
 
 The config contains experiment-specific information such as geographic location and installed solar capacity. This can
-be adjusted according to the specific location and setup.
+be adjusted according to the specific location and setup. It is also used to switch on or off the
+utilization of surplus energy to allow different types of experiments to be performed.
 
 ## Logs
 There are two logs written to /logs:
