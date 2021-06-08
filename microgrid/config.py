@@ -18,6 +18,9 @@ hourly_checks_threshold = 65
 # How many individual readings should be taken by the sensors.read_average method before averaging?
 number_of_reads = 100
 
+# Specify whether surplus should be utilized by the Pi (by calculating units), or if it should only perform logging.
+surplus_utilization = True
+
 # Specify headers for the csv files. Must match data from sensors for grid data and from computations for comp data
 # Must match the naming convention used in sensors and csv_logger!
 grid_headers = ["timestamp",
