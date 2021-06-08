@@ -88,5 +88,6 @@ if __name__ == "__main__":
 
     # Run the three phases sequentially
     pijuice = initial_boot_sequence()  # the initial sequence returns the pijuice object for further use
-    computation_routine(pijuice)
+    if config.surplus_utilization:  # utilize surplus only if this mode is selected in the config
+        computation_routine(pijuice)
     shutdown_routine(pijuice)
