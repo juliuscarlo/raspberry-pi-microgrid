@@ -6,8 +6,8 @@ import os
 ROOT_DIR = os.path.dirname(os.path.abspath("/home/pi/raspberry-pi-microgrid/gridcontrol.py"))
 
 # local information
-location = "Mannheim"
-solar_capacity = 20
+location = "Seattle"
+solar_capacity = 40
 
 # Adjust at which battery percentage the Pi should start performing calculations
 surplus_threshold = 85
