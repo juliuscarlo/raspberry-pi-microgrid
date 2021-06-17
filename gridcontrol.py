@@ -10,11 +10,6 @@ import subprocess
 import os
 
 
-# TODO: make sure directories exist for log files (empty dirs dont exist on github)
-# change logging to print next startup time when shutting down
-# remove "line written to csv" log
-# check all logs for senseful info, maybe add one or two steps
-
 def initial_boot_sequence():
     """Performs mandatory steps after wakeup from sleep. Returns the pijuice object for further use."""
     logging.info("Initial boot sequence started...")
