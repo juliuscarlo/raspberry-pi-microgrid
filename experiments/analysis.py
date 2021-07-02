@@ -11,29 +11,29 @@ plt.isinteractive()
 ##################### SET EXPERIMENT DATES HERE #######################################
 
 # Is surplus utilization active? Then set this to True.
-surplus_utilization = False
+surplus_utilization = True
 
 # Set the start and end time and date of the experiment to select data from the csv log
 # single day
-# start_date_1 = '2021-06-21 03:00:00'
-# end_date_1 = '2021-06-22 03:00:00'
+start_date_1 = '2021-06-21 03:00:00'
+end_date_1 = '2021-06-22 03:00:00'
 #
 # # 7-day interval
-# start_date_7 = '2021-06-20 20:00:00'
-# end_date_7 = '2021-06-27 21:00:00'
+start_date_7 = '2021-06-20 20:00:00'
+end_date_7 = '2021-06-27 21:00:00'
 
-# single day
-start_date_1 = '2021-06-10 03:00:00'
-end_date_1 = '2021-06-11 03:00:00'
-
-# 7-day interval
-start_date_7 = '2021-06-08 23:00:00'
-end_date_7 = '2021-06-13 23:59:59'
+# # single day
+# start_date_1 = '2021-06-10 03:00:00'
+# end_date_1 = '2021-06-11 03:00:00'
+#
+# # 7-day interval
+# start_date_7 = '2021-06-09 03:00:00'
+# end_date_7 = '2021-06-14 03:00:00'
 
 #######################################################################################
 
 
-df = pd.read_csv("rawdata/grid2.csv")
+df = pd.read_csv("rawdata/grid.csv")
 df['timestamp'] = pd.to_datetime((df['timestamp']))
 
 
@@ -190,7 +190,8 @@ def create_plots(data, filename, surplus_utilization, duration):
                         label='units_computed', dash_capstyle='round', linewidth=1)
 
         ax2.set_ylabel('Units')
-        ax2.set_ylim(0, max(data['computations_cumulated']) * 1.10)
+        ax2.set_yscale("log")
+        ax2.set_ylim(0, 1200)  # max(data['computations_cumulated']) * 1.10)
 
     # Create a single legend
     lns = lns1 + lns2
