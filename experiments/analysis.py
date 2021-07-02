@@ -11,21 +11,29 @@ plt.isinteractive()
 ##################### SET EXPERIMENT DATES HERE #######################################
 
 # Is surplus utilization active? Then set this to True.
-surplus_utilization = True
+surplus_utilization = False
 
 # Set the start and end time and date of the experiment to select data from the csv log
 # single day
-start_date_1 = '2021-06-21 03:00:00'
-end_date_1 = '2021-06-22 03:00:00'
+# start_date_1 = '2021-06-21 03:00:00'
+# end_date_1 = '2021-06-22 03:00:00'
+#
+# # 7-day interval
+# start_date_7 = '2021-06-20 20:00:00'
+# end_date_7 = '2021-06-27 21:00:00'
+
+# single day
+start_date_1 = '2021-06-10 03:00:00'
+end_date_1 = '2021-06-11 03:00:00'
 
 # 7-day interval
-start_date_7 = '2021-06-20 20:00:00'
-end_date_7 = '2021-06-27 21:00:00'
+start_date_7 = '2021-06-08 23:00:00'
+end_date_7 = '2021-06-13 23:59:59'
 
 #######################################################################################
 
 
-df = pd.read_csv("grid.csv")
+df = pd.read_csv("rawdata/grid2.csv")
 df['timestamp'] = pd.to_datetime((df['timestamp']))
 
 
@@ -76,39 +84,6 @@ def calculate_time_above_battery_level_x(df, x):
             df.at[i, varname] = interpolation_factor * time_delta
 
 
-# # Calculate time above 98% battery level
-# df['surplus_time_98'] = pd.Timedelta("0 days")
-# for i in range(1, len(df)):
-#     if df.at[i, "battery_level"] < 98:
-#         df.at[i, 'surplus_time_98'] = pd.Timedelta("0 days")
-#     # add another interpolation for cases where <98 but before was >= 98
-#     elif (df.at[i, "battery_level"] >= 98) & (df.at[i - 1, "battery_level"] < 98):
-#         df.at[i, 'surplus_time_98'] = (df.loc[i].timestamp - df.loc[i - 1].timestamp) / 2  # interpolate
-#     elif (df.at[i, "battery_level"] >= 98) & (df.at[i - 1, "battery_level"] >= 98):
-#         df.at[i, 'surplus_time_98'] = df.loc[i].timestamp - df.loc[i - 1].timestamp
-#
-# # Calculate time above 95% battery level
-# df['surplus_time_95'] = pd.Timedelta("0 days")
-# for i in range(1, len(df)):
-#     if df.at[i, "battery_level"] < 95:
-#         df.at[i, 'surplus_time_95'] = pd.Timedelta("0 days")
-#     # add another interpolation for cases where <95 but before was >= 95
-#     elif (df.at[i, "battery_level"] >= 95) & (df.at[i - 1, "battery_level"] < 95):
-#         df.at[i, 'surplus_time_95'] = (df.loc[i].timestamp - df.loc[i - 1].timestamp) / 2  # interpolate
-#     elif (df.at[i, "battery_level"] >= 95) & (df.at[i - 1, "battery_level"] >= 95):
-#         df.at[i, 'surplus_time_95'] = df.loc[i].timestamp - df.loc[i - 1].timestamp
-#
-# # Calculate time above 85% battery level
-# df['surplus_time_85'] = pd.Timedelta("0 days")
-# for i in range(1, len(df)):
-#     if df.at[i, "battery_level"] < 85:
-#         df.at[i, 'surplus_time_85'] = pd.Timedelta("0 days")
-#     # add another interpolation for cases where <95 but before was >= 95
-#     elif (df.at[i, "battery_level"] >= 85) & (df.at[i - 1, "battery_level"] < 85):
-#         df.at[i, 'surplus_time_85'] = (df.loc[i].timestamp - df.loc[i - 1].timestamp) / 2  # interpolate
-#     elif (df.at[i, "battery_level"] >= 85) & (df.at[i - 1, "battery_level"] >= 85):
-#         df.at[i, 'surplus_time_85'] = df.loc[i].timestamp - df.loc[i - 1].timestamp
-
 calculate_computation_base_values(df)
 
 calculate_time_above_battery_level_x(df, 85)
@@ -122,7 +97,7 @@ df_single_day = df.loc[start_date_1:end_date_1]
 df_seven_days = df.loc[start_date_7:end_date_7]
 
 
-def calculate_stats(data):
+def calculate_stats(data, surplus_utilization):
     stats = dict()
     stats["experiment_duration"] = data.index[-1] - data.index[0]
     stats["start_date"] = data.index[0]
@@ -135,23 +110,28 @@ def calculate_stats(data):
     stats["mean_battery_level"] = data.battery_level.resample('60min').mean().mean()
 
     stats["battery_above_98_absolute"] = data.surplus_time_98.sum()
-    stats["battery_above_98 relative"] = stats["battery_above_98_absolute"] / stats["experiment_duration"]
+    stats["battery_above_98 relative"] = str(
+        stats["battery_above_98_absolute"] / stats["experiment_duration"] * 100) + "%"
 
     stats["battery_above_95_absolute"] = data.surplus_time_95.sum()
-    stats["battery_above_95 relative"] = stats["battery_above_95_absolute"] / stats["experiment_duration"]
+    stats["battery_above_95 relative"] = str(
+        stats["battery_above_95_absolute"] / stats["experiment_duration"] * 100) + "%"
 
     stats["battery_above_85_absolute"] = data.surplus_time_85.sum()
-    stats["battery_above_85 relative"] = stats["battery_above_85_absolute"] / stats["experiment_duration"]
+    stats["battery_above_85 relative"] = str(
+        stats["battery_above_85_absolute"] / stats["experiment_duration"] * 100) + "%"
 
-    # Computation stats
-    stats["computations_absolute"] = data.event.value_counts().unit_computed
-    stats["mean_computations_24h"] = stats["computations_absolute"] / (
-            stats["experiment_duration"] / pd.Timedelta(days=1))
+    if surplus_utilization:
+        # Computation stats
+        stats["computations_absolute"] = data.event.value_counts().unit_computed
+        stats["mean_computations_24h"] = stats["computations_absolute"] / (
+                stats["experiment_duration"] / pd.Timedelta(days=1))
 
-    stats["computation_time_absolute"] = data.computation_time.sum()
-    stats["computation_time_relative"] = stats["computation_time_absolute"] / stats["experiment_duration"]
-    stats["computation_rate"] = stats["computations_absolute"] / (
-            stats["computation_time_absolute"].total_seconds() / 60)
+        stats["computation_time_absolute"] = data.computation_time.sum()
+        stats["computation_time_relative"] = str(
+            stats["computation_time_absolute"] / stats["experiment_duration"] * 100) + "%"
+        stats["computation_rate"] = stats["computations_absolute"] / (
+                stats["computation_time_absolute"].total_seconds() / 60)
 
     # Temperature stats
     stats["max_temperature"] = max(data.battery_temperature)
@@ -164,12 +144,12 @@ def calculate_stats(data):
 
 print("----------- 1 day -----------")
 
-for item in calculate_stats(df_single_day).items():
+for item in calculate_stats(df_single_day, surplus_utilization).items():
     print(item)
 
 print("----------- 7 days -----------")
 
-for item in calculate_stats(df_seven_days).items():
+for item in calculate_stats(df_seven_days, surplus_utilization).items():
     print(item)
 
 #####################
@@ -228,5 +208,5 @@ def create_plots(data, filename, surplus_utilization, duration):
     # plt.show()
 
 
-create_plots(df_single_day, "plot1_single_day", surplus_utilization, duration="short")
-create_plots(df_seven_days, "plot2_seven_days", surplus_utilization, duration="long")
+create_plots(df_single_day, "plots/plot1_single_day", surplus_utilization, duration="short")
+create_plots(df_seven_days, "plots/plot2_seven_days", surplus_utilization, duration="long")
