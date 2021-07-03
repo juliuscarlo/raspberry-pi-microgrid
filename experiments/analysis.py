@@ -170,13 +170,13 @@ plt.rc('legend', fontsize=15)
 def create_plots(data, filename, surplus_utilization, duration):
     fig, ax1 = plt.subplots(figsize=(16, 4), dpi=200)
     lns1 = ax1.plot_date(data.index, data.battery_level, color='blue', marker='.', alpha=0.5, linestyle=':',
-                         markersize=2, label='battery_level', dash_capstyle='round', linewidth=1)
+                         markersize=2, label='battery level', dash_capstyle='round', linewidth=1)
     lns2 = ax1.plot_date(data.index, data.battery_temperature, color='orange', marker='.', alpha=0.5, linestyle=':',
-                         markersize=2, label='battery_temperature', dash_capstyle='round', linewidth=1)
+                         markersize=2, label='battery temperature', dash_capstyle='round', linewidth=1)
 
     ax1.set_xlim([min(data.index), max(data.index)])
 
-    ax1.set_ylabel('Battery Level (%), Temperature (°C)')
+    ax1.set_ylabel('battery level [%], temperature [°C]')
     ax1.set_ylim(0, 105)
     ax1.set_yticks([0, 25, 50, 65, 85, 98])
 
@@ -193,9 +193,9 @@ def create_plots(data, filename, surplus_utilization, duration):
         ax2 = ax1.twinx()
 
         lns3 = ax2.plot(data.computations_cumulated, color='green', marker='.', alpha=0.5, linestyle=':', markersize=2,
-                        label='units_computed', dash_capstyle='round', linewidth=1)
+                        label='daily cumulated computations', dash_capstyle='round', linewidth=1)
 
-        ax2.set_ylabel('Units')
+        ax2.set_ylabel('computations [units]')
         ax2.set_ylim(0, 1200)  # max(data['computations_cumulated']) * 1.10)
 
     # Create a single legend
