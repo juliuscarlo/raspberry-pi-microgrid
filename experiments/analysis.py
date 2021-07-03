@@ -45,8 +45,14 @@ def calculate_computation_base_values(df):
             pass
         if df.at[i, "event"] == "unit_computed":
             df.at[i, 'computations_cumulated'] = df.at[i - 1, 'computations_cumulated'] + 1
-        if df.at[i, "event"] == "shutdown":
-            df.at[i, "computations_cumulated"] = df.at[i - 1, 'computations_cumulated']
+        else:
+            df.at[i, 'computations_cumulated'] = df.at[i - 1, 'computations_cumulated']
+
+        if df.loc[i, "timestamp"].day > df.at[i - 1, "timestamp"].day:
+            df.at[i, 'computations_cumulated'] = 0
+
+        # if df.at[i, "event"] == "shutdown":
+        #     df.at[i, "computations_cumulated"] = df.at[i - 1, 'computations_cumulated']
 
     # Add time used for computations
     df['computation_time'] = pd.Timedelta("0 days")
@@ -190,7 +196,6 @@ def create_plots(data, filename, surplus_utilization, duration):
                         label='units_computed', dash_capstyle='round', linewidth=1)
 
         ax2.set_ylabel('Units')
-        ax2.set_yscale("log")
         ax2.set_ylim(0, 1200)  # max(data['computations_cumulated']) * 1.10)
 
     # Create a single legend
