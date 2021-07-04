@@ -15,25 +15,29 @@ surplus_utilization = True
 
 # Set the start and end time and date of the experiment to select data from the csv log
 # single day
-start_date_1 = '2021-06-21 03:00:00'
-end_date_1 = '2021-06-22 03:00:00'
-#
-# # 7-day interval
-start_date_7 = '2021-06-20 20:00:00'
-end_date_7 = '2021-06-27 21:00:00'
+if surplus_utilization:
+    start_date_1 = '2021-06-21 00:00:00'
+    end_date_1 = '2021-06-22 00:00:01'
+    #
+    # # 7-day interval
+    start_date_7 = '2021-06-20 00:00:00'
+    end_date_7 = '2021-06-27 00:00:01'
 
-# # single day
-# start_date_1 = '2021-06-10 03:00:00'
-# end_date_1 = '2021-06-11 03:00:00'
-#
-# # 7-day interval
-# start_date_7 = '2021-06-09 03:00:00'
-# end_date_7 = '2021-06-14 03:00:00'
+    df = pd.read_csv("rawdata/grid.csv")
+
+else:
+    # single day
+    start_date_1 = '2021-06-10 03:00:00'
+    end_date_1 = '2021-06-11 03:00:00'
+
+    # 7-day interval
+    start_date_7 = '2021-06-09 03:00:00'
+    end_date_7 = '2021-06-14 03:00:00'
+
+    df = pd.read_csv("rawdata/grid2.csv")
 
 #######################################################################################
 
-
-df = pd.read_csv("rawdata/grid.csv")
 df['timestamp'] = pd.to_datetime((df['timestamp']))
 
 
@@ -197,6 +201,7 @@ def create_plots(data, filename, surplus_utilization, duration):
 
         ax2.set_ylabel('computations [units]')
         ax2.set_ylim(0, 1200)  # max(data['computations_cumulated']) * 1.10)
+        ax2.grid(alpha=0.5, linewidth=1)
 
     # Create a single legend
     lns = lns1 + lns2
@@ -205,7 +210,6 @@ def create_plots(data, filename, surplus_utilization, duration):
 
     labs = [l.get_label() for l in lns]
     ax1.legend(lns, labs, markerscale=8, bbox_to_anchor=(0, 1, 1, 0), loc="lower center", ncol=3)
-
     # Rotate and autoalign the labels
     fig.autofmt_xdate()
 
